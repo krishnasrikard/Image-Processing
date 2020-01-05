@@ -73,7 +73,7 @@ Let's take a look at our augmented images. First let's set up our example files,
 
 import os
 
-base_dir = '/home/krishna/Desktop/Image Processing/Tensor Flow Practice/Cats and Dogs/Images'
+base_dir = '/home/krishna/Desktop/Learning and Developing/Image Processing/Tensor Flow Practice/Cats and Dogs/Images'
 train_dir = os.path.join(base_dir, 'train')
 validation_dir = os.path.join(base_dir, 'validation')
 
@@ -219,7 +219,7 @@ Click below for the solution.
 history = model.fit_generator(
       train_generator,
       steps_per_epoch=100,
-      epochs=10,
+      epochs=5,
       validation_data=validation_generator,
       validation_steps=100,
       verbose=2)
@@ -264,7 +264,7 @@ import PIL.Image as Image
 
 Input_Image_Shape = (150, 150)
 
-img = "Cat.jpg"
+img = "Dog.jpg"
 img = Image.open(img).resize(Input_Image_Shape)
 plt.imshow(img)
 
