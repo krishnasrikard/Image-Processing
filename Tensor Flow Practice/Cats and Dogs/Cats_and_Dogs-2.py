@@ -73,7 +73,7 @@ Let's take a look at our augmented images. First let's set up our example files,
 
 import os
 
-base_dir = '/home/krishna/Desktop/Learning and Developing/Image Processing/Tensor Flow Practice/Cats and Dogs/Images'
+base_dir = '/home/krishna/Desktop/Learning and Developing/Image-Processing/Tensor Flow Practice/Cats and Dogs/Images'
 train_dir = os.path.join(base_dir, 'train')
 validation_dir = os.path.join(base_dir, 'validation')
 
