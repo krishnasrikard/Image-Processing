@@ -1,5 +1,6 @@
-# -*- coding: utf-8 -*-
-
+"""
+The following code utilises TesnsorFlow 1.x
+"""
 # Cat vs. Dog Image Classification
 
 import os

@@ -1,5 +1,6 @@
-# -*- coding: utf-8 -*-
-
+"""
+The following code utilises TesnsorFlow 1.x
+"""
 # Cat vs. Dog Image Classification
 
 import os
@@ -21,7 +22,7 @@ sess = tf.Session(config=config)
 print ("-------------------------------------------------------------------------------------")
 
 
-base_dir = '/home/krishna/Desktop/Image Processing/Tensor Flow Practice/Cats and Dogs/Images'
+base_dir = '/home/krishna/Desktop/Learning and Developing/Image-Processing/Tensor Flow Practice/Cats and Dogs/Images'
 train_dir = os.path.join(base_dir, 'train')
 validation_dir = os.path.join(base_dir, 'validation')
 
