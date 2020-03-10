@@ -31,3 +31,7 @@ Model-2 can be found in Image_Colorization_Inspired_from_Research_Paper.ipynb. T
 ![](Model-3.png)
 
 Model-3 can be found in Image_Colorization_Inspired_from_Research_Paper.ipynb. The following Model is in Research Paper.
+
+### Computations
+
+It is mentioned in Research Paper that they trained their Model for 60,000 Images from ImageNet Dataset in which 10% of it is used to Vaidate the Model and Model took almost 23 Hours to train. In our case, all the 3 Models are trained for 20-30 Epochs on Image Data containing 4,556 Images due to computational limitations. It is suggested to train the model on a good GPU resourceful platform with good amount of RAM.
