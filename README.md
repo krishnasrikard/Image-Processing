@@ -11,4 +11,4 @@ Learning and Practicing Image Classification using different methods in Matlab a
 Converting a Gray-Scale Image to RGB Image using Deep Learning.
 
 ## Object Detection
-Learning Object Detection
+Learning and Implementation of Object Detection.

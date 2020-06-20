@@ -1,0 +1,4 @@
+classes = 2
+train = train_images.txt
+valid = valid_images.txt
+names = model.names
