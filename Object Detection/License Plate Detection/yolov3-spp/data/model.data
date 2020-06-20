@@ -1,0 +1,4 @@
+classes = 1
+train = data/train_images.txt
+valid = data/valid_images.txt
+names = data/model.names

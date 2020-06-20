@@ -20,7 +20,7 @@ We will be dealing with images of dimensions (416 X 416 X 3). Run the python scr
 ## Training the Model
 Source of Learning Transfer Learning on YoloV3: [Transfer Learning](https://github.com/ultralytics/yolov3/wiki/Train-Custom-Data)
 
-The folder **yolov3** is created by downloading the GitHub Repository [https://github.com/ultralytics/yolov3](https://github.com/ultralytics/yolov3)
+The folder **yolov3-spp** is created by downloading the GitHub Repository [https://github.com/ultralytics/yolov3](https://github.com/ultralytics/yolov3) and renamed to yolov3-spp.
 
 **Framework**: PyTorch \
 **Model**: YOLOV-SPP
@@ -28,21 +28,21 @@ The folder **yolov3** is created by downloading the GitHub Repository [https://g
 Due to insufficiency in GPU Resources, Model is trained with all Training Images but with only one Validation Image for 300-320 epochs. But, the Model Performance is fairly Good.
 
 ### Steps:
-1. Copying license-plate-dataset folder to yolov3 folder.
-2. Copying Model_Data/train_images.txt to the folder yolo/data
-3. Copying Model_Data/valid_images.txt to the folder yolo/data
-4. Copying Model_Data/model.names to the folder yolo/data
-5. Copying Model_Data/model.data to the folder yolo/data
+1. Copying license-plate-dataset folder to yolov3-spp folder.
+2. Copying Model_Data/train_images.txt to the folder yolov3-spp/data
+3. Copying Model_Data/valid_images.txt to the folder yolov3-spp/data
+4. Copying Model_Data/model.names to the folder yolov3-spp/data
+5. Copying Model_Data/model.data to the folder yolov3-spp/data
 6. Changing model.cfg file.
-7. Change to yolov3 directory where we can find the python script **train.py**. Run the following command to train the model
+7. Change to yolov3-spp directory where we can find the python script **train.py**. Run the following command to train the model
     ```
     python3 train.py --data data/model.data --weights weights/yolov3-spp-ultralytics.pt
     ```
-    Implementation in Python Notebook **License Plate Detection PyTorch Running.ipynb** in yolov3 folder and the notebook  **tutorial.ipynb** is for tutorial.
+    Implementation in Python Notebook **License Plate Detection PyTorch Running.ipynb** in yolov3-spp folder and the notebook  **tutorial.ipynb** is for tutorial.
 8. Inorder to convert PyTorch Weights to TensorFlow Weights check the link: [Reference](https://github.com/ultralytics/yolov3#darknet-conversion)
 
 ### Results of Training
-<img src='yolov3/results.png'>
+<img src='yolov3-spp/results.png'>
 
 ## Testing the Model
 **Framework**: TensorFlow,Keras \

@@ -1,0 +1,1 @@
+../license-plate-dataset/images/valid/dayride_type1_001.mp4#t=1055.jpg
