@@ -20,7 +20,7 @@ We will be dealing with images of dimensions (416 X 416 X 3). Run the python scr
 ## Training the Model
 Source of Learning Transfer Learning on YoloV3: [Transfer Learning](https://github.com/ultralytics/yolov3/wiki/Train-Custom-Data)
 
-The folder **yolov3** is created by cloning the GitHub Repository [https://github.com/ultralytics/yolov3](https://github.com/ultralytics/yolov3)
+The folder **yolov3** is created by downloading the GitHub Repository [https://github.com/ultralytics/yolov3](https://github.com/ultralytics/yolov3)
 
 **Framework**: PyTorch \
 **Model**: YOLOV-SPP
