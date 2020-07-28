@@ -15,3 +15,6 @@ Learning and Implementation of Object Detection.
 
 ## Neural Style Transfer
 Learning Neural Style Transfer
+
+## Denoising Dirty Documents
+Cleaning Documents using Denoising AutoEncoder.
