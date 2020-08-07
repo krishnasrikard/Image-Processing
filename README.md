@@ -16,5 +16,8 @@ Learning and Implementation of Object Detection.
 ## Neural Style Transfer
 Learning Neural Style Transfer
 
+## Denoising Images
+Removing Noise from Images of Dimensions (256,256,3) using Denoising AutoEncoder.
+
 ## Denoising Dirty Documents
 Cleaning Documents using Denoising AutoEncoder.
