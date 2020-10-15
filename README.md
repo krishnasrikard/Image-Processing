@@ -18,3 +18,6 @@ Removing Noise from Images of Dimensions (256,256,3) using Denoising AutoEncoder
 
 ## Denoising Dirty Documents
 Cleaning Documents using Denoising AutoEncoder.
+
+## Violation of Social Distancing
+Detection of Social Distancing using YOLOv3.
