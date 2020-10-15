@@ -4,6 +4,7 @@ import matplotlib.image as pimg
 from matplotlib.patches import Rectangle
 import struct
 import cv2
+import random
 
 def IntervalOverlap(A, B):
 	# Finds Intersection Dimension
@@ -40,88 +41,83 @@ def IOU(box1, box2):
     
     return float(IntersectionArea) / UnionArea
 
-def PreprocessInput(image, net_h, net_w):
+def PreprocessInput(image, Input_H, Input_W):
     new_h, new_w, _ = image.shape
 
     # determine the new size of the image
-    if (float(net_w)/new_w) < (float(net_h)/new_h):
-        new_h = (new_h * net_w)/new_w
-        new_w = net_w
+    if (float(Input_W)/new_w) < (float(Input_H)/new_h):
+        new_h = (new_h * Input_W)/new_w
+        new_w = Input_W
     else:
-        new_w = (new_w * net_h)/new_h
-        new_h = net_h
+        new_w = (new_w * Input_H)/new_h
+        new_h = Input_H
 
     # resize the image to the new size
     resized = cv2.resize(image[:,:,::-1]/255., (int(new_w), int(new_h)))
 
     # embed the image into the standard letter box
-    new_image = np.ones((net_h, net_w, 3)) * 0.5
-    new_image[int((net_h-new_h)//2):int((net_h+new_h)//2), int((net_w-new_w)//2):int((net_w+new_w)//2), :] = resized
+    new_image = np.ones((Input_H, Input_W, 3)) * 0.5
+    new_image[int((Input_H-new_h)//2):int((Input_H+new_h)//2), int((Input_W-new_w)//2):int((Input_W+new_w)//2), :] = resized
     new_image = np.expand_dims(new_image, 0)
 
     return new_image
 
 
-def DecodeNetworkOutput(netout, anchors, obj_thresh, NMS_Threshold, net_h, net_w):
-    grid_h, grid_w = netout.shape[:2]
+def DecodeNetworkOutput(NetworkOutput, Anchors, Class_Threshold, NMS_Threshold, Input_H, Input_W):
+    grid_h, grid_w = NetworkOutput.shape[:2]
     nb_box = 3
-    netout = netout.reshape((grid_h, grid_w, nb_box, -1))
-    nb_class = netout.shape[-1] - 5
+    NetworkOutput = NetworkOutput.reshape((grid_h, grid_w, nb_box, -1))
+    nb_class = NetworkOutput.shape[-1] - 5
 
     boxes = []
 
-    netout[..., :2]  = Sigmoid(netout[..., :2])
-    netout[..., 4:]  = Sigmoid(netout[..., 4:])
-    netout[..., 5:]  = netout[..., 4][..., np.newaxis] * netout[..., 5:]
-    netout[..., 5:] *= netout[..., 5:] > obj_thresh
+    NetworkOutput[..., :2]  = Sigmoid(NetworkOutput[..., :2])
+    NetworkOutput[..., 4:]  = Sigmoid(NetworkOutput[..., 4:])
+    NetworkOutput[..., 5:]  = NetworkOutput[..., 4][..., np.newaxis] * NetworkOutput[..., 5:]
+    NetworkOutput[..., 5:] *= NetworkOutput[..., 5:] > Class_Threshold
 
     for i in range(grid_h*grid_w):
         row = i / grid_w
         col = i % grid_w
         
         for b in range(nb_box):
-            # 4th element is objectness score
-            objectness = netout[int(row)][int(col)][b][4]
-            #objectness = netout[..., :4]
+            objectness = NetworkOutput[int(row)][int(col)][b][4]            
+            if(objectness.all() <= Class_Threshold): continue
             
-            if(objectness.all() <= obj_thresh): continue
-            
-            # first 4 elements are x, y, w, and h
-            x, y, w, h = netout[int(row)][int(col)][b][:4]
+            x, y, w, h = NetworkOutput[int(row)][int(col)][b][:4]
 
-            x = (col + x) / grid_w # center position, unit: image width
-            y = (row + y) / grid_h # center position, unit: image height
-            w = anchors[2 * b + 0] * np.exp(w) / net_w # unit: image width
-            h = anchors[2 * b + 1] * np.exp(h) / net_h # unit: image height  
+            x = (col + x) / grid_w # Center Position, unit: Image Width
+            y = (row + y) / grid_h # Center Position, unit: Image Height
+            w = Anchors[2 * b + 0] * np.exp(w) / Input_W # unit: Image Width
+            h = Anchors[2 * b + 1] * np.exp(h) / Input_H # unit: Image Height  
             
             # last elements are class probabilities
-            classes = netout[int(row)][col][b][5:]
+            classes = NetworkOutput[int(row)][col][b][5:]
             
             box = BoundBox(x-w/2, y-h/2, x+w/2, y+h/2, objectness, classes)
-            #box = BoundBox(x-w/2, y-h/2, x+w/2, y+h/2, None, classes)
 
             boxes.append(box)
 
     return boxes
 
-def CorrectBoxes(boxes, image_h, image_w, net_h, net_w):
+def CorrectBoxes(boxes, Image_H, Image_W, Input_H, Input_W):
 	# Reseting Dimensions for all Boxes
 	# Correction from Original Code
-    if (float(net_w)/image_w) < (float(net_h)/image_h):
-        new_w = net_w
-        new_h = (image_h*net_w)/image_w
+    if (float(Input_W)/Image_W) < (float(Input_H)/Image_H):
+        new_w = Input_W
+        new_h = (Image_H*Input_W)/Image_W
     else:
-        new_h = net_w
-        new_w = (image_w*net_h)/image_h
+        new_h = Input_W
+        new_w = (Image_W*Input_H)/Image_H
         
     for i in range(len(boxes)):
-        x_offset, x_scale = (net_w - new_w)/2./net_w, float(new_w)/net_w
-        y_offset, y_scale = (net_h - new_h)/2./net_h, float(new_h)/net_h
+        x_offset, x_scale = (Input_W - new_w)/2./Input_W, float(new_w)/Input_W
+        y_offset, y_scale = (Input_H - new_h)/2./Input_H, float(new_h)/Input_H
         
-        boxes[i].xmin = int((boxes[i].xmin - x_offset) / x_scale * image_w)
-        boxes[i].xmax = int((boxes[i].xmax - x_offset) / x_scale * image_w)
-        boxes[i].ymin = int((boxes[i].ymin - y_offset) / y_scale * image_h)
-        boxes[i].ymax = int((boxes[i].ymax - y_offset) / y_scale * image_h)
+        boxes[i].xmin = int((boxes[i].xmin - x_offset) / x_scale * Image_W)
+        boxes[i].xmax = int((boxes[i].xmax - x_offset) / x_scale * Image_W)
+        boxes[i].ymin = int((boxes[i].ymin - y_offset) / y_scale * Image_H)
+        boxes[i].ymax = int((boxes[i].ymax - y_offset) / y_scale * Image_H)
         
 def NonMaxSupression(boxes, NMS_Threshold):
     if len(boxes) > 0:
@@ -168,31 +164,28 @@ class BoundBox:
 
 def Draw_Boxes(ImagePath, v_boxes, v_labels, v_scores):
 	# Plotting Results
-    img = pimg.imread(ImagePath)
-    fig,ax = plt.subplots(1)
-    for i in range(len(v_boxes)):
-        box = v_boxes[i]
-        y1, x1, y2, x2 = max(box.ymin,0), max(box.xmin,0), max(box.ymax,0), max(box.xmax,0)
-        width, height = x2 - x1, y2 - y1
+	img = pimg.imread(ImagePath)
+	fig = plt.figure()
+	ax = fig.add_subplot(111)
+	for i in range(len(v_boxes)):
+		box = v_boxes[i]
+		y1, x1, y2, x2 = max(box.ymin,0), max(box.xmin,0), max(box.ymax,0), max(box.xmax,0)
+		width, height = x2 - x1, y2 - y1
+		
+		rect = Rectangle((x1, y1), width, height, fill=False, color='red', angle=0, lw = 2)
+		label = "%s (%.3f)" % (v_labels[i], v_scores[i])
+		ax.add_patch(rect)
+		ax.text(x1,y1,label,color='red',fontsize=14)
 
-        rect = Rectangle((x1, y1), width, height, fill=False, color='red', angle=0)
-        label = "%s (%.3f)" % (v_labels[i], v_scores[i])
-        ax.add_patch(rect)
-        ax.text(x1,y1,label,color='red')
+	ax.imshow(img)
+	plt.show()
 
-    ax.imshow(img)
-    plt.show()
-
-def getBoxes(boxes, labels, thresh):
-	v_boxes, v_labels, v_scores = list(), list(), list()
-	# enumerate all boxes
-	for box in boxes:
-		# enumerate all possible labels
-		for i in range(len(labels)):
-			# check if the threshold for this label is high enough
-			if box.classes[i] > thresh:
-				v_boxes.append(box)
-				v_labels.append(labels[i])
-				v_scores.append(box.classes[i]*100)
-				# don't break, many labels may trigger for one box
-	return v_boxes, v_labels, v_scores
+def getBoxes(Boxes, Labels, Class_Threshold):
+	BoundingBoxes, BoxLabels, BoxScores = list(), list(), list()
+	for box in Boxes:
+		for i in range(len(Labels)):
+			if box.classes[i] > Class_Threshold:
+				BoundingBoxes.append(box)
+				BoxLabels.append(Labels[i])
+				BoxScores.append(box.classes[i]*100)
+	return BoundingBoxes, BoxLabels, BoxScores
