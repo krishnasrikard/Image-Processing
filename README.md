@@ -1,8 +1,8 @@
-# Image-Processing
-Image Processing using Matlab and TensorFlow
+# Learning-Computer-Vision
+Computer Vision using TensorFlow, PyTorch and MatLab
 
-## Image Processing Architectures
-Consists of Image Processing Architectures like AlexNet, VGGNet and ZFNet.
+## Deep Learning Architectures
+Consists of Deep Learning Architectures like AlexNet, VGGNet and ZFNet.
 
 ## Image Classification
 Learning and Practicing Image Classification using different methods in Matlab and Python.
